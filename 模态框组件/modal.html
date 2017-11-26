@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        p,h4{
+            margin:0;
+        }
+        .modal{
+            width: 500px;
+            background-color: #fff;
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 6px;
+            box-shadow: 0 3px 9px rgba(0,0,0,.5);
+
+        }
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .modal-content div {
+            padding: 20px;
+        }
+        .modal-footer {
+            padding: 15px;
+            text-align: right;
+            border-top: 1px solid #e5e5e5;
+        }
+        .btn {
+            padding: 5px 15px;
+            border: none;
+            outline: none;
+        }
+        .blue {
+            color: #fff;
+            background-color: #39f;
+            border-color: #39f;
+        }
+    </style>
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <div id="app">
+		<m-modal @on-ok="ok" @on-cancel="cancel" modal-title="提醒"></m-modal>
+		<m-modal>
+			<ul slot="modal-content">
+				<li v-for="item of list">{{ item }}</li>
+			</ul>
+			<div slot="modal-footer">
+				<span>确定</span>
+				<span>重置</span>
+				<span>返回</span>
+			</div>
+		</m-modal>
+    </div>
+    <script>
+        /*
+            设置的props：
+                modalTitle 提醒信息 默认为 '这是模态框'
+
+            定制模板：
+                slot为modal-content  定制提醒信息模板
+                slot为modal-footer   定制底部模板
+
+            监控子组件状态变化：
+                事件名on-ok       点击确定触发
+                事件名on-cancel   点击取消触发
+        */ 
+
+        Vue.component("m-modal",{
+        	props:{
+        		modalTitle:{
+        			type:String,
+        			default:"这是模态框"
+        		}
+        	},
+        	template:`
+				<div class="modal">
+        			<div class="modal-header">
+        				<h4>{{ modalTitle }}</h4>
+        			</div>
+        			<div class="modal-content">
+						<div>
+							<slot name="modal-content">在这里添加内容</slot>
+						</div>
+        			</div>
+        			<div class="modal-footer">
+        				<slot name="modal-footer">
+        					<input type="button" class="btn blue" value="确定" @click="okHandle">
+        					<input type="button" class="btn" value="取消" @click="cancelHandle">
+        				</slot>
+        			</div>
+        		</div>
+        	`,
+        	methods:{
+        		okHandle:function(){
+        			//通知父组件，点了确定
+        			this.$emit("on-ok");
+        		},
+        		cancelHandle:function(){
+        			//通知父组件，点了取消
+        			this.$emit("on-cancel");
+        		}
+        	}
+        });
+
+        var list = ['hpl','Peri','Meme'];
+        new Vue({
+        	el:"#app",
+        	data:{
+        		list:list
+        	},
+        	methods:{
+        		ok:function(){
+        			alert("点了确认");
+        		},
+        		cancel:function(){
+        			alert("点了取消");
+        		}
+        	}
+        });
+
+
+
+
+    </script>
+</body>
+</html>
